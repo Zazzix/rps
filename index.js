@@ -1,25 +1,78 @@
+const choices = ["rock", "paper", "scissors"];
+let winners = [];
 
-function getComputerChoice() {
-    const array = ['Rock', 'Paper', 'Scissors'];
-    return array[Math.floor(Math.random() * array.length)];
+function game() {
+  for (let i = 1; i <= 5; i++) {
+    playRound(i);
+  }
+  logWins();
 }
 
-function playRound(playerSelection, computerSelection) {
-    if (playerSelection.toLowerCase() == computerSelection) {
-        return 'It\'s a tie!';
-  } else if ((computerSelection == 'rock' && playerSelection.toLowerCase() == 'scissors') || 
-            (computerSelection == 'scissors' && playerSelection.toLowerCase() == 'paper') ||
-            (computerSelection == 'paper' && playerSelection.toLowerCase() == 'rock'))
-        return `You lose! ${computerSelection} beats ${playerSelection.toLowerCase()}`;
-    else ((playerSelection.toLowerCase() == 'rock' && computerSelection == 'scissors') ||
-            (playerSelection.toLowerCase() == 'scissors' && computerSelection == 'paper') ||
-            (playerSelection.toLowerCase() == 'paper' && computerSelection == 'rock'))
-        return `You win! ${playerSelection.toLowerCase()} beats ${computerSelection}`;   
+function playRound(round) {
+  const playerSelection = playerChoice();
+  const computerSelection = computerChoice();
+  const winner = checkWinner(playerSelection, computerSelection);
+  winners.push(winner);
+  logRound(playerSelection, computerSelection, winner, round);
 }
-   
-  const playerSelection = 'PaPer';
-  const computerSelection = getComputerChoice().toLowerCase();
-  console.log(playRound(playerSelection, computerSelection));
-  console.log(computerSelection);
 
+function playerChoice() {
+  let input = prompt("Type Rock, Paper, or Scissors");
+  while (input == null) {
+    input = prompt("Type Rock, Paper, or Scissors");
+  }
+  input = input.toLowerCase();
+  let check = validateInput(input);
+  while (check == false) {
+    input = prompt(
+      "Type Rock, Paper, or Scissors. Spelling needs to be exact, but capitilization doesnt matter"
+    );
+    while (input == null) {
+      input = prompt("Type Rock, Paper, or Scissors");
+    }
+    input = input.toLowerCase();
+    check = validateInput(input);
+  }
+  return input;
+}
 
+function computerChoice() {
+  return choices[Math.floor(Math.random() * choices.length)];
+}
+
+function validateInput(choice) {
+  return choices.includes(choice);
+}
+
+function checkWinner(choiceP, choiceC) {
+  if (choiceP === choiceC) {
+    return "Tie";
+  } else if (
+    (choiceP === "rock" && choiceC == "scissors") ||
+    (choiceP === "paper" && choiceC == "rock") ||
+    (choiceP === "scissors" && choiceC == "paper")
+  ) {
+    return "Player";
+  } else {
+    return "Computer";
+  }
+}
+
+function logWins() {
+  let playerWins = winners.filter((item) => item == "Player").length;
+  let computerWins = winners.filter((item) => item == "Computer").length;
+  let ties = winners.filter((item) => item == "Tie").length;
+  console.log("Results:");
+  console.log("Player Wins:", playerWins);
+  console.log("Computer Wins:", computerWins);
+  console.log("Ties:", ties);
+}
+
+function logRound(playerChoice, computerChoice, winner, round) {
+  console.log("Round:", round);
+  console.log("Player Chose:", playerChoice);
+  console.log("Computer Chose:", computerChoice);
+  console.log(winner, "Won the Round");
+  console.log("-------------------------------");
+}
+game();
